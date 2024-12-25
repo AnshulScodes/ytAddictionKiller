@@ -1,7 +1,7 @@
-## ytAddictionKiller
+# The YouTube Addiction Killer
 Repository that attempts to do a bunch of things stop youtube addiction, but for now its only one thing!
 
-# yt --> Transcript AND Blocked Video: How to Use!
+## yt --> Transcript AND Blocked Video: How to Use!
 1. Clone this repository
 2. Open command prompt, and cd into the folder that holds this file
 3. Run the file (python ytTranscript.py), OR (python3 ytTranscript.py)
