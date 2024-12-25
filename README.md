@@ -1,4 +1,4 @@
-# ytAddictionKiller
+## ytAddictionKiller
 Repository that attempts to do a bunch of things stop youtube addiction, but for now its only one thing!
 
 # yt --> Transcript AND Blocked Video: How to Use!
