@@ -9,13 +9,15 @@ import pystray
 from PIL import Image
 import threading
 import sys
-from tkinter import Tk, Text, Scrollbar, Toplevel, RIGHT, Y, END, BOTH
+from tkinter import Tk, Text, Scrollbar, RIGHT, Y, END, BOTH
+from podcastChecker import get_youtube_details_yt_dlp
 
 class TranscriptFetcher:
     def __init__(self):
         self.running = False
         self.thread = None
         self.transcript_cache = ""
+        self.video_details = {}
 
     def start_monitoring(self):
         if not self.running:
@@ -75,6 +77,11 @@ class TranscriptFetcher:
                 [f"[{entry['start']:.2f}s] {entry['text']}" for entry in transcript]
             )
             self.transcript_cache = transcript_text
+
+            # Fetching video details using yt-dlp
+            url = self.get_chrome_url()
+            if url:
+                self.video_details = get_youtube_details_yt_dlp(url)
             self.close_youtube_tab()
         except Exception as e:
             print(f"Transcript fetch error: {e}")
@@ -99,20 +106,32 @@ class TranscriptFetcher:
     def show_transcript(self):
         if not self.transcript_cache:
             self.transcript_cache = "No recent transcript available."
+        
+        # Create the main Tkinter window
         root = Tk()
         root.title("Transcript Viewer")
+        root.geometry("600x400")
 
-        frame = Toplevel(root)
-        frame.geometry("600x400")
-
-        scrollbar = Scrollbar(frame)
+        # Add a Scrollbar and Text widget
+        scrollbar = Scrollbar(root)
         scrollbar.pack(side=RIGHT, fill=Y)
 
-        text = Text(frame, wrap='word', yscrollcommand=scrollbar.set)
+        text = Text(root, wrap='word', yscrollcommand=scrollbar.set)
         text.insert(END, self.transcript_cache)
+
+        # Display video details above the transcript
+        if self.video_details:
+            details_text = f"Title: {self.video_details.get('title', 'N/A')}\n"
+            details_text += f"Creator: {self.video_details.get('creator', 'N/A')}\n"
+            details_text += f"Duration: {self.video_details.get('duration_seconds', 'N/A')} seconds\n\n"
+            text.insert(END, details_text)
+        
         text.pack(expand=True, fill=BOTH)
 
+        # Configure scrollbar behavior
         scrollbar.config(command=text.yview)
+
+        # Start the Tkinter main loop
         root.mainloop()
 
 
